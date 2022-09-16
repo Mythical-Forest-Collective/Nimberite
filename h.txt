@@ -31,3 +31,4 @@
 # M: What does the Apache 2.0 license mean in basic words lol, chronically dumb here-
 # E: give me 2secs
 # M: Oki
+# E: posted on discord
