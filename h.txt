@@ -1,5 +1,9 @@
-# E = Ecorous
-# M = Mythical Forest Collective
+===TYPERS===
+E = Ecorous
+M = Mythical Forest Collective
+
+qc_hug = "https://cdn.discordapp.com/emojis/1020343656525344799.webp?size=1024&quality=lossless"
+
 
 # M: First order of business! Structuring the objects we'll be using!
 # E: :+1:
@@ -118,3 +122,33 @@ E: Look at test.md
 M: Hm yeah, maybe tables are good for it? Idk :/
 
 M: aaaaaaa my back sob
+E: https://cdn.discordapp.com/emojis/1020343656525344799.webp?size=1024&quality=lossless
+M: Emoji key time-
+M: <qc_hug>
+E: WHYD IT CHANGE
+
+M: Emoji key :>
+M: Also! Implementation time?-
+
+
+E: Probably should lmao
+M: XD oki!
+E: we've been doing this for an hour and we haven't even written one line of code LMAO
+E: well, now we have
+M: O shit
+E: ADHD moment
+M: pffff
+
+
+[Created modules folder]
+
+M: Yeetus
+E: I think soon we should actually try get a running server 
+M: Yip! Need to structure the login packets
+E: Maybe we could skip auth for now, just to test
+M: Yip! Could even be optional
+M: Also we need to parse packets
+E: It's optional on the minecraft server (am on about the normal java one)
+E: (may come across as rude, not intended) As I said before, I've never touched networking
+M: Nah dw! ya ain't rude!
+

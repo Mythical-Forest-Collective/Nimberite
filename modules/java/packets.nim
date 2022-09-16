@@ -12,17 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import modules/core/packets  # Packets
-
-# Adding astricks to identifiers exports them as public
-type
-  NimberiteServer* = object
-    address*: string  # Address the server should bind to
-    port*: int # The port of the server
-    packetHandlers*: seq[proc(packet: BasePacket)]
-
-# colours pretty
-# yeet
-
-proc start(address: string, port: int): NimberiteServer =
-  
+# TODO: Make it so Java packets can be converted to Nim and vice versa
