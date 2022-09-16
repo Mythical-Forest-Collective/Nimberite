@@ -91,44 +91,12 @@ M: Hmm... We need a nicer way to chat yet to preserve everything xD
 
 E: I think this is fine personally
 
+E: Lmao love the commit message theme
+
+M: [Reply L84] Aah it is...... How about making it a part of the core?
 
 M: Fair! Just if lines get edited, then 'replies' get shifted rip
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-M: [Reply L84-85] Hm yeah... Included in the core is probs a good idwa, but maybe we could try making it so you can choose what data is actually saved and stuff?
+M: Hm yeah... Included in the core is probs a good idea, but maybe we could try making it so you can choose what data is actually saved and stuff?
