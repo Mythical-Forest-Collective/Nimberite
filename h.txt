@@ -32,3 +32,103 @@
 # E: give me 2secs
 # M: Oki
 # E: posted on discord
+# M: Oki
+
+# E: am back
+# E: damn it I don't have terminal write access lmao
+# M: Sweet! Now, shall we start?
+# M: Ah that can be fixed hold on-
+
+# E: also why master? I prefer main. At first we did too, but we got used to main and it's better imo.
+# M: We just hated the change from `master` to `main` tbh, master implies it's the head branch, same as main
+# M: Eh, not better, just preference really
+# M: I can rename the branch tho rn, gimme a sec
+# E: nah, it's fine
+# M: Ya sure?
+# E: yeah, after all, it is just preference
+# M: fair!
+
+# M: Oki now, shall we brainstorm naming and structure?
+# E: yeah
+# M: Oki so, we should really like... Hm. Just decide structure on the fly? Lmao
+
+# E: Also should we remove the `#`s
+# M: Idk, i like them? Your choice tho! (lmao choide)
+# E: We can keep them, less work lmao. It's fine lmao
+# M: Fair xD, but i can just do remove all mentions of '# '?
+# M: Oki yeetus
+
+[Start of Model]
+----¬
+|
+|--- Core: contains the bare minimum to start and join a server with the Java Edition protocol (not including world gen)
+|
+|--- World: contains features such as reading and saving playerdata, structures, and world generation
+
+[End of Model]
+
+M: Specified Java Edition since ideally we shall support more (unofficially-)
+E: fair, fair
+
+M: Imo playerdata doesn't fit with the `World` module?
+
+E: it's in the world file tho? and contains things such as position (not sure what happened there)
+
+M: Massive lag spike- Also, we don't *have* to model it after the vanilla MC server, since we're aiming for modularity, right?
+M: Can also make the world module rely on the `Player` module if needed too!
+
+E: fair point, that would be nice actually
+
+M: Yeyeye
+
+E: [Reply L78] actually, we might. Because the position is stored in the in-memory playerdata. And position would be necessary for the world. 
+E: Wait position is necessary to complete a join right? Yeah it is, look at wiki.vg. So does it need to be in core?
+
+M: Ah ye
+
+
+M: Hmm... We need a nicer way to chat yet to preserve everything xD
+
+E: I think this is fine personally
+
+
+M: Fair! Just if lines get edited, then 'replies' get shifted rip
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+M: [Reply L84-85] Hm yeah... Included in the core is probs a good idwa, but maybe we could try making it so you can choose what data is actually saved and stuff?
