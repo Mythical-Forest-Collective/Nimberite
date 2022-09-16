@@ -1,0 +1,33 @@
+# E = Ecorous
+# M = Mythical Forest Collective
+
+# M: First order of business! Structuring the objects we'll be using!
+# E: :+1:
+# E: Should we do a java and name everything in different files? Like a MinecraftObject.nim? Not used to how nim structures things so idk
+# M: Ah fair, nah we can always move stuff to other files after ^^
+# M: We'll also want 'base types' that can be inherited from, we'll be implementing MC Java's protocol on top of that ^^
+# E: At some point we'll probably want to design a plugins system. Written in nim, ofc.
+# M: Honestly with the callback system i think we should add for handling the protocol, it should implement itself in a way lmao
+# M: But a dedicated API is defo super useful
+# E: Also, we should keep these comments, very useful in future lmao
+
+# M: Ehhhhhh, will they be useful?
+# E: Probably lmao.
+# E: We can always copy this to a txt file lmao
+# M: True! But no idea who is who in the future lmao
+
+# M: Oop
+
+[Move to h.txt]
+# E: Just moving here
+
+# M: Blue text ooh
+
+[Another move to h.txt]
+# M: Gonna read this rq (in reference to the license)
+# E: its an extension I have lmao, it does it automagically
+# M: O
+
+# M: What does the Apache 2.0 license mean in basic words lol, chronically dumb here-
+# E: give me 2secs
+# M: Oki
