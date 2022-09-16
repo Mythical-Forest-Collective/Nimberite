@@ -61,7 +61,7 @@
 [Start of Model]
 ----¬
 |
-|--- Core: contains the bare minimum to start and join a server with the Java Edition protocol (not including world gen)
+|--- Core: Contains the bare minimum to start and join a server with the Java Edition protocol (not including world gen)
 |
 |--- World: contains features such as reading and saving playerdata, structures, and world generation
 
@@ -100,3 +100,21 @@ M: Fair! Just if lines get edited, then 'replies' get shifted rip
 
 
 M: Hm yeah... Included in the core is probs a good idea, but maybe we could try making it so you can choose what data is actually saved and stuff?
+
+
+M: Hai
+
+E: Hiiiii
+
+M: Hmmmm... We need a better model of the core xD
+M: Can markdown do that?
+
+E: Maybe!
+
+M: #googleTime
+
+E: it can do tables
+E: Look at test.md
+M: Hm yeah, maybe tables are good for it? Idk :/
+
+M: aaaaaaa my back sob
