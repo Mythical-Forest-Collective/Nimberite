@@ -11,18 +11,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import modules/core/utils
 
-import modules/core/packets  # Packets
+import modules/core/packets as cpackets
+import modules/java/packets as jpackets
 
-# Adding astricks to identifiers exports them as public
+# Adding astricks to identifiers exports them as public -Solaris
 type
-  NimberiteServer* = object
-    address*: string  # Address the server should bind to
-    port*: int # The port of the server
-    packetHandlers*: seq[proc(packet: BasePacket)]
+  PacketHandler* = proc(packet: BasePacket) # Alias type -Solaris
 
-# colours pretty
-# yeet
+  NimberiteServer* = object # General object for the Nimberite core -Solaris
+    address*: string  # Address the server should bind to -Solaris
+    port*: int # The port of the server -Solaris
+    packetHandlers*: PacketHandler
+
 
 proc start(address: string, port: int): NimberiteServer =
-  
+  info("Starting server at " & address & ":" & $port & "!")
+
+  fatal("WE DON'T HAVE ANYTHING IMPLEMENTED LMAO -Solaris")
+
+var server = start("0.0.0.0", 25565) # yay!!!!

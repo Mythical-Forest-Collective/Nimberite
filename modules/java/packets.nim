@@ -13,3 +13,8 @@
 # limitations under the License.
 
 # TODO: Make it so Java packets can be converted to Nim and vice versa
+
+import ../core/packets as jpackets
+
+type
+  JavaBasePacket* = object of BasePacket
