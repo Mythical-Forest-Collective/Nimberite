@@ -32,6 +32,9 @@ proc readBytes*(data: string): seq[byte] =
   for c in data:
     result.add readByte(c)
 
+proc toString(bytes: openarray[byte]): string =
+  result = newString(bytes.len)
+  copyMem(result[0].addr, bytes[0].unsafeAddr, bytes.len)
 
 # Read the bytes directly from the socket
 proc readVarInt*(client: AsyncSocket): Future[int32] {.async.} =
@@ -151,9 +154,10 @@ proc readString(bytes: openArray[byte]): string =
   var length = readVarInt(bytes) 
   var varIntBytes = readByteLength(bytes)
 
-  var bytes = bytes[varIntBytes-1..len(bytes)]
+  var bytes = bytes[varIntBytes-1..(varIntBytes-1)+length]
 
-  
+  result = toString(bytes)
+
 
 proc readPacket*(client: AsyncSocket): Future[JavaBasePacket] {.async.} =
   var length = await readVarInt(client)
@@ -177,8 +181,17 @@ proc readPacket*(client: AsyncSocket): Future[JavaBasePacket] {.async.} =
 
     dat = dat[startIndex..len(dat)-1]
 
+    datLength = readByteLength(dat)
     var strLen = readVarInt(dat)
     echo strLen
+
+    startIndex += datLength + strLen
+
+    var str = readString(dat)
+    echo str
+    # Yeye, all i'm doing rn is reading
+    # probably, but that can 
+    dat = dat[startIndex..len(dat)-1]
 
     return res
   else:
