@@ -14,11 +14,20 @@
 
 # TODO: Make it so Java packets can be converted to Nim and vice versa
 
-import ../core/packets as cpackets # that annoyed me lmao, no the jpackets instead of cpackets
-# Aah fair xD
-# I'ma try implementing a neater way of adding implementation... backends? handlers?
-
-
-# The base java packet, so we can make others aware of this -Solaris
 type
-  JavaBasePacket* = object of BasePacket
+  VarInt* = int32
+  VarLong* = int64
+
+# The base java packet, is here to represent packets easily in the Java impl -Solaris
+type
+  JavaBasePacket* = ref object of RootObj
+    length*: VarInt  # The length of the packet
+    id*: VarInt      # The id of the packet
+    data*: seq[byte] # The raw byte data
+
+  # TODO: Make `nextState` use an enum
+  HandshakePacket* = ref object of JavaBasePacket
+    protocolVersion*: VarInt # Protocol version
+    serverAddress*: string   # Not useful to us really
+    port*: uint16
+    nextState*: VarInt       # Login state, 1 for Status, 2 for Login

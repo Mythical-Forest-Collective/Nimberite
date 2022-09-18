@@ -12,57 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import std/[asyncdispatch, asyncnet, sequtils]
+import std/[asyncdispatch, asyncnet, strformat]
 
-import ../core/utils
+import ./packets as jpackets
+import ./utils as jutils
 
-const SEGMENT_BITS = 0x7F
-const CONTINUE_BIT = 0x80
-
-
-type ClientDisconnectError = object of IOError
-
-
-proc toByteArray(data: string): seq[byte] =
-  # Cast string to bytes!~
-  var chars = data.toSeq
-
-  for c in chars:
-    result.add c.byte
-
-
-proc readVarInt(client: AsyncSocket): Future[int32] {.async.} =
-  var value: int32 = 0
-  var position = 0
-  var currentByte: int32 # Represent a byte as an int32
-
-  while true:
-    var byteArray = toByteArray(await client.recv(1))
-    echo $byteArray
-
-    var byt = byteArray[0]
-    if byt == "": 
-      log("Byte buffer is empty?", lvlDebug)
-      raise newException(ClientDisconnectError, "Client disconnected!")
-
-    currentByte = byt[0].int32 # Read one byte at a time
-
-    var res = currentByte and SEGMENT_BITS
-    res = res shl position.SomeInteger
-    value = value or res
-
-    if (currentByte and CONTINUE_BIT) == 0:
-      break
-
-    position += 7
-
-    if position >= 32:
-      raise ValueError.newException("The VarInt is too big! Is it valid?")
-
-  return value
+import ../core/utils as cutils
 
 
 var clients:seq[AsyncSocket]
+
 
 proc handle(client: AsyncSocket) {.async.} = # Handle client
   log("Client handler was called!", Level.lvlDebug)
@@ -71,15 +30,14 @@ proc handle(client: AsyncSocket) {.async.} = # Handle client
 
   try:
     while true:
-      var future = readVarInt(client)
+      var future = readPacket(client)
+      var packet:JavaBasePacket = await future
 
-      var packetLength = await future
-
-      if future.failed:
-        raise newException(Exception, "Hm... Something went wrong")
-
-      if packetLength == 0:
-        break
+      case packet.id
+        of 0:
+          packet = packet.HandshakePacket
+        else:
+          debug "Unimplemented functionality packet of ID {packet.id}!".fmt
 
   except:
     log("Client disconnect!", Level.lvlDebug)
