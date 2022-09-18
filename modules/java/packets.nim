@@ -14,7 +14,11 @@
 
 # TODO: Make it so Java packets can be converted to Nim and vice versa
 
-import ../core/packets as jpackets
+import ../core/packets as cpackets # that annoyed me lmao, no the jpackets instead of cpackets
+# Aah fair xD
+# I'ma try implementing a neater way of adding implementation... backends? handlers?
 
+
+# The base java packet, so we can make others aware of this -Solaris
 type
   JavaBasePacket* = object of BasePacket

@@ -12,7 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# RootObj makes it inheritable
+# RootObj makes it inheritable -Solaris
 type BasePacket* = object of RootObj
-  discard # Empty for now
-
