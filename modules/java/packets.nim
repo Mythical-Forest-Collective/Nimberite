@@ -18,6 +18,10 @@ type
   VarInt* = int32
   VarLong* = int64
 
+  NextState* = enum
+    Status = 1
+    Login = 2
+
 # The base java packet, is here to represent packets easily in the Java impl -Solaris
 type
   JavaBasePacket* = ref object of RootObj
@@ -30,4 +34,4 @@ type
     protocolVersion*: VarInt # Protocol version
     serverAddress*: string   # Not useful to us really
     port*: uint16
-    nextState*: VarInt       # Login state, 1 for Status, 2 for Login
+    nextState*: NextState    # Login state, 1 for Status, 2 for Login

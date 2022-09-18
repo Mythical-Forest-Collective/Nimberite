@@ -158,6 +158,11 @@ proc readString(bytes: openArray[byte]): string =
 
   result = toString(bytes)
 
+# Equivalent in other langs is typically `bytes[0] | bytes[1] << 8`
+# We're messing with bitwise operations here to do stuff to get sane values
+# -Solaris
+proc readUnsignedShort(bytes: openArray[byte]): uint16 = bytes[0] or bytes[1] shl 8
+
 
 proc readPacket*(client: AsyncSocket): Future[JavaBasePacket] {.async.} =
   var length = await readVarInt(client)
@@ -177,21 +182,22 @@ proc readPacket*(client: AsyncSocket): Future[JavaBasePacket] {.async.} =
     var datLength = readByteLength(dat)
     startIndex += datLength
 
-    echo readVarInt(dat)
+    res.protocolVersion = readVarInt(dat)
 
     dat = dat[startIndex..len(dat)-1]
 
     datLength = readByteLength(dat)
     var strLen = readVarInt(dat)
-    echo strLen
-
     startIndex += datLength + strLen
 
-    var str = readString(dat)
-    echo str
-    # Yeye, all i'm doing rn is reading
-    # probably, but that can 
+    var serverAddress = readString(dat)
+    res.serverAddress = serverAddress
+
     dat = dat[startIndex..len(dat)-1]
+    res.port = readUnsignedShort(dat)
+
+    res.nextState = dat[len(dat)-1].NextState
+
 
     return res
   else:
