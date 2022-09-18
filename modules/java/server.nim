@@ -39,7 +39,7 @@ proc readVarInt(client: AsyncSocket): Future[int32] {.async.} =
   while true:
     var byteArray = toByteArray(await client.recv(1))
     echo $byteArray
-    # Aaaaaaaaaaa windows sucks
+
     var byt = byteArray[0]
     if byt == "": 
       log("Byte buffer is empty?", lvlDebug)
