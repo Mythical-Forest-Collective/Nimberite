@@ -12,15 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO: Make it so Java packets can be converted to Nim and vice versa
+import std/strformat
+import ../external/uuid4
+
+# TODO: Make it so Java packets can be converted to Generic packets and vice versa
 
 type
+  ClientDisconnectError* = object of IOError
+
   VarInt* = int32
   VarLong* = int64
 
   NextState* = enum
     Status = 1
     Login = 2
+
+  ListPlayer* = object
+    name: string
+    uuid: Uuid
 
 # The base java packet, is here to represent packets easily in the Java impl -Solaris
 type
@@ -29,9 +38,12 @@ type
     id*: VarInt      # The id of the packet
     data*: seq[byte] # The raw byte data
 
-  # TODO: Make `nextState` use an enum
   HandshakePacket* = ref object of JavaBasePacket
     protocolVersion*: VarInt # Protocol version
     serverAddress*: string   # Not useful to us really
-    port*: uint16
+    port*: uint16            # The port number, also not useful to us
     nextState*: NextState    # Login state, 1 for Status, 2 for Login
+
+
+proc `$`*(jbp: JavaBasePacket): string =
+  return "(Length: {jbp.length}, ID: {jbp.id}, Data: {$jbp.data})".fmt

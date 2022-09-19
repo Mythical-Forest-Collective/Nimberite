@@ -14,8 +14,9 @@
 
 import std/[asyncdispatch, asyncnet, strformat]
 
-import ./packets as jpackets
-import ./utils as jutils
+import ./types as jtypes
+
+import ./packet/unpackers as junpackers
 
 import ../core/utils as cutils
 

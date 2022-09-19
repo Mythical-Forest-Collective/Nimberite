@@ -17,21 +17,15 @@ import std/[asyncdispatch]  # Async!~
 import modules/core/utils
 
 import modules/core/packets as cpackets
-import modules/java/packets as jpackets
+import modules/java/types as jtypes
 
 import modules/java/server as jserver
 
 # Adding astricks to identifiers exports them as public -Solaris
 type
-  PacketReciever = proc() # Alias type -Solaris
-  PacketHandler* = proc(packet: BasePacket)
-
   NimberiteServer* = object # General object for the Nimberite core - Solaris
     address*: string  # Address the server should bind to -Solaris
     port*: int # The port of the server -Solaris
-    packetRecievers*: PacketReciever
-    packetHandlers*: PacketHandler
-    packetQueue*: seq[BasePacket]
 
 
 proc start*(address: string, port: int) {.async.} =

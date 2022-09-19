@@ -12,18 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import std/[asyncdispatch, asyncnet, strformat]
+import std/[asyncdispatch, asyncnet]
+import ./types as jtypes
 
-import ./packets as jpackets
 
-import ../core/utils as cutils
-
-# TODO: Don't export things not used in other files
-const SEGMENT_BITS* = 0x7F
-const CONTINUE_BIT* = 0x80
-
-type ClientDisconnectError* = object of IOError
-
+const SEGMENT_BITS = 0x7F
+const CONTINUE_BIT = 0x80
 
 template readByte*(data: char): byte = data.byte
 template readByte*(data: string): byte = data[0].byte
@@ -32,9 +26,10 @@ proc readBytes*(data: string): seq[byte] =
   for c in data:
     result.add readByte(c)
 
-proc toString(bytes: openarray[byte]): string =
+proc toString*(bytes: seq[byte]): string =
   result = newString(bytes.len)
   copyMem(result[0].addr, bytes[0].unsafeAddr, bytes.len)
+
 
 # Read the bytes directly from the socket
 proc readVarInt*(client: AsyncSocket): Future[int32] {.async.} =
@@ -59,7 +54,6 @@ proc readVarInt*(client: AsyncSocket): Future[int32] {.async.} =
 
   return value
 
-
 proc readVarLong*(client: AsyncSocket): Future[int64] {.async.} =
   var value: VarLong = 0
   var position = 0
@@ -82,13 +76,15 @@ proc readVarLong*(client: AsyncSocket): Future[int64] {.async.} =
 
   return value
 
+
 # Read the bytes from a buffer
-proc readVarInt*(bytes: openArray[byte]): int32 =
+proc readVarInt*(bytes: openArray[byte], pos: var int): int32 =
   var value: VarInt = 0
   var position = 0
   var currentByte: int32 # Represent a byte as an int32
 
   for byt in bytes:
+    pos += 1 # Use a position counter to keep track of where we are in the packet
     currentByte = byt.int32
 
     var res = currentByte and SEGMENT_BITS
@@ -105,13 +101,13 @@ proc readVarInt*(bytes: openArray[byte]): int32 =
 
   return value
 
-
-proc readVarLong*(bytes: openArray[byte]): int64 =
+proc readVarLong*(bytes: openArray[byte], pos: var int): int64 =
   var value: VarLong = 0
   var position = 0
   var currentByte: int32 # Represent a byte as an int32
 
   for byt in bytes:
+    pos += 1
     currentByte = byt.int32
 
     var res = (currentByte and SEGMENT_BITS).int64
@@ -128,7 +124,7 @@ proc readVarLong*(bytes: openArray[byte]): int64 =
 
   return value
 
-
+# Only used in the` readString` method so it can slice off the correct amount of bytes
 proc readByteLength*(bytes: openArray[byte]): int64 =
   var length: int = 0
   var position = 0
@@ -145,60 +141,22 @@ proc readByteLength*(bytes: openArray[byte]): int64 =
     position += 7
 
     if position >= 64:
-      raise ValueError.newException("The VarLong is too big! Is it valid?")
+      raise ValueError.newException("The length of the VarInt or varLong is too big!")
 
   return length
 
-
-proc readString(bytes: openArray[byte]): string =
-  var length = readVarInt(bytes) 
+proc readString*(bytes: openArray[byte], pos: var int): string =
+  var length = readVarInt(bytes, pos) 
   var varIntBytes = readByteLength(bytes)
 
   var bytes = bytes[varIntBytes-1..(varIntBytes-1)+length]
+  pos += int(varIntBytes + length) - 1
 
   result = toString(bytes)
 
 # Equivalent in other langs is typically `bytes[0] | bytes[1] << 8`
 # We're messing with bitwise operations here to do stuff to get sane values
 # -Solaris
-proc readUnsignedShort(bytes: openArray[byte]): uint16 = bytes[0] or bytes[1] shl 8
-
-
-proc readPacket*(client: AsyncSocket): Future[JavaBasePacket] {.async.} =
-  var length = await readVarInt(client)
-  var id = await readVarInt(client)
-
-  var byteArray = readBytes(await client.recv(length))
-
-  debug $length
-  debug $id
-  debug $byteArray
-
-  if id == 0:
-    var startIndex: int64 = 0
-    var res = HandshakePacket(length:length, id:id, data:byteArray)
-    var dat:seq[byte] = byteArray
-
-    var datLength = readByteLength(dat)
-    startIndex += datLength
-
-    res.protocolVersion = readVarInt(dat)
-
-    dat = dat[startIndex..len(dat)-1]
-
-    datLength = readByteLength(dat)
-    var strLen = readVarInt(dat)
-    startIndex += datLength + strLen
-
-    var serverAddress = readString(dat)
-    res.serverAddress = serverAddress
-
-    dat = dat[startIndex..len(dat)-1]
-    res.port = readUnsignedShort(dat)
-
-    res.nextState = dat[len(dat)-1].NextState
-
-
-    return res
-  else:
-    return JavaBasePacket(length:length, id:id, data:byteArray)
+proc readUnsignedShort*(bytes: openArray[byte], pos: var int): uint16 =
+  pos += 2
+  result = bytes[0] or bytes[1] shl 8
