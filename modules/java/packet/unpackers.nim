@@ -20,7 +20,7 @@ import ../../core/logging as logging
 
 import ../../external/jason # An effecient JSON serialisation (only!) module
 
-let logger: Logger = getLogger("nimberite/java/packet/unpackers")
+let logger: Logger = getLogger(createLoggingSource("nimberite", "java", "packet", "unpackers"))
 
 # Construct the Status Response JSON object
 proc statusResponseJson(protocolVersion: int, serverVersion: string, 

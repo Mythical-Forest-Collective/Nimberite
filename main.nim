@@ -28,7 +28,7 @@ type
     port*: int # The port of the server -Solaris
 
 
-let logger: Logger = getLogger("nimberite/main")
+let logger: Logger = getLogger(logging.createLoggingSource("nimberite", "main"))
 
 proc start*(address: string, port: int) {.async.} =
   #log("Starting server at " & address & ":" & $port & "!", Level.lvlInfo)

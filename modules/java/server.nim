@@ -24,7 +24,7 @@ import ../core/logging as logging
 
 var clients:seq[AsyncSocket]
 
-let logger: Logger = getLogger("nimberite/java/server")
+let logger: Logger = getLogger(logging.createLoggingSource("nimberite", "java", "server"))
 
 #[
 proc handler(client: AsyncSocket) {.async.} =
@@ -53,11 +53,11 @@ proc reciever(client: AsyncSocket) {.async.} = # Handle client
 
   except:
     logger.debug("Client disconnect!")
-    #log("Client disconnect!", Level.lvlDebug)
+    
 
   clients.del(clients.find(client)) # Should only be called on exit
   logger.debug("Client removed from clients list!")
-  #log("Client removed from clients list!", Level.lvlDebug)
+  
 
 
 proc jserver*(address: string, port: int) {.async.} =
@@ -69,9 +69,7 @@ proc jserver*(address: string, port: int) {.async.} =
   server.setSockOpt(OptReuseAddr, true) 
   server.bindAddr(Port(port), address) 
   # I found a simple tut for async logging? (link here: https://hookrace.net/blog/writing-an-async-logger-in-nim/)
-  #, also live share is sharing the listener for nimberite, so I could join it locally , yeah, just saying that I could theoretically
   server.listen() # Make it so we can listen to connections
-  #log("Java server ready!", Level.lvlInfo)
   logger.info("Java server ready!")
 
   while true:

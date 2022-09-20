@@ -14,21 +14,35 @@
 
 import std/[logging, macros, terminal, os, tables, strutils]
 
-type Logger* = object # Not inheritable
+type Logger* = object
   source*: string 
 
 var loggers = newSeq[Logger]()
 
-proc getLogger*(source: string): Logger =
+
+proc createLoggingSource*(input: varargs[string]): string =
+     var temp: string = ""
+     for inp in input:
+         
+         if inp == input[^1]:
+          var n = temp & inp
+          temp = n
+         else:
+          var n = temp & inp & "|"
+          temp = n
+     result = temp
+
+proc getLogger*(source: string = "nimberite"): Logger =
   for logger in loggers:
     if logger.source == source:
       return logger
 
-  var result = Logger(source:source)
-  loggers.add result
+  var temp = Logger(source:source)
+  loggers.add temp
+  result = temp
 
 # This code reminds me of once I spent 5 hours writing a python logging system - Pyris
-proc log(logger: Logger, level: Level=Level.lvlInfo, input: string) = # keep this, will be useful lmao, can be moved into a temp file if needbe (will need to be changed tho)
+proc log(logger: Logger, level: Level=Level.lvlInfo, input: string) =
   var levelColour: ForegroundColor
   var levelString: string
   if level == Level.lvlInfo:
@@ -45,9 +59,7 @@ proc log(logger: Logger, level: Level=Level.lvlInfo, input: string) = # keep thi
     if level == Level.lvlError: levelString = "error"
     else: levelString = "fatal"
   stdout.styledWriteLine(fgCyan, logger.source & " ", levelColour, levelString, fgDefault, " " & input)
-# yeye oki
 
-# template info*(input: string) = log(input, Level.lvlInfo)=
 proc info*(logger: Logger, input: varargs[string]) = log(logger, Level.lvlInfo, input.join(""))
 proc debug*(logger: Logger, input: varargs[string]) = log(logger, Level.lvlDebug, input.join(""))
 proc warn*(logger: Logger, input: varargs[string]) = log(logger, Level.lvlWarn, input.join(""))
