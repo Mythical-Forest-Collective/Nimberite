@@ -15,9 +15,12 @@
 import std/[asyncdispatch, asyncnet, strformat]
 import ../types as jtypes
 import ../decoders
-import ../../core/utils
+
+import ../../core/logging as logging
+
 import ../../external/jason # An effecient JSON serialisation (only!) module
 
+let logger: Logger = getLogger("nimberite/java/packet/unpackers")
 
 # Construct the Status Response JSON object
 proc statusResponseJson(protocolVersion: int, serverVersion: string, 
@@ -44,7 +47,7 @@ proc statusResponseJson(protocolVersion: int, serverVersion: string,
 
 
 proc unpackHandshakePacket(length, id: int32, byteArray: seq[byte]): HandshakePacket =
-  debug $length
+  logger.debug $length
   result = HandshakePacket(length:length, id:id, data:byteArray)
 
   if length == 1:
@@ -67,7 +70,7 @@ proc unpackHandshakePacket(length, id: int32, byteArray: seq[byte]): HandshakePa
   elif nextState == 2:
     result.nextState = NextState.Login
 
-  debug $result
+  logger.debug $result
 
 
 proc readPacket*(client: AsyncSocket): Future[JavaBasePacket] {.async.} =

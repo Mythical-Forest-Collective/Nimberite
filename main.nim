@@ -14,7 +14,7 @@
 
 import std/[asyncdispatch]  # Async!~
 
-import modules/core/utils
+import modules/core/logging
 
 import modules/core/packets as cpackets
 import modules/java/types as jtypes
@@ -28,8 +28,11 @@ type
     port*: int # The port of the server -Solaris
 
 
+let logger: Logger = getLogger("nimberite/main")
+
 proc start*(address: string, port: int) {.async.} =
-  log("Starting server at " & address & ":" & $port & "!", Level.lvlInfo)
+  #log("Starting server at " & address & ":" & $port & "!", Level.lvlInfo)
+  logger.info("Starting server at " & address & ":" & $port & "!")
 
   asyncCheck jserver(address, port)  # Run in parallel with any other server impls
 

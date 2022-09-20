@@ -15,17 +15,28 @@
 import std/[asyncdispatch, asyncnet, strformat]
 
 import ./types as jtypes
+import ./fields as jfields
 
 import ./packet/unpackers as junpackers
 
-import ../core/utils as cutils
+import ../core/logging as logging
 
 
 var clients:seq[AsyncSocket]
 
+let logger: Logger = getLogger("nimberite/java/server")
 
-proc handle(client: AsyncSocket) {.async.} = # Handle client
-  log("Client handler was called!", Level.lvlDebug)
+#[
+proc handler(client: AsyncSocket) {.async.} =
+  var packetQueue = client.packetQueue
+  while true:
+    if packetQueue.len != 0:
+      #await client.send()
+      discard
+]#
+
+proc reciever(client: AsyncSocket) {.async.} = # Handle client
+  logger.debug("Client handler was called!")
 
   var bytes:seq[byte] = newSeq[byte]() # Bytes in buffer
 
@@ -38,18 +49,21 @@ proc handle(client: AsyncSocket) {.async.} = # Handle client
         of 0:
           packet = packet.HandshakePacket
         else:
-          debug "Unimplemented functionality packet of ID {packet.id}!".fmt
+          logger.debug "Unimplemented functionality packet of ID {packet.id}!".fmt
 
   except:
-    log("Client disconnect!", Level.lvlDebug)
+    logger.debug("Client disconnect!")
+    #log("Client disconnect!", Level.lvlDebug)
 
   clients.del(clients.find(client)) # Should only be called on exit
-  log("Client removed from clients list!", Level.lvlDebug)
+  logger.debug("Client removed from clients list!")
+  #log("Client removed from clients list!", Level.lvlDebug)
 
 
 proc jserver*(address: string, port: int) {.async.} =
   clients = @[]  # All connected java clients
-  log("Starting the Java server...", Level.lvlInfo)
+  logger.info("Starting the Java server...")
+  #log("Starting the Java server...", Level.lvlInfo)
 
   let server = newAsyncSocket(buffered=false)
   server.setSockOpt(OptReuseAddr, true) 
@@ -57,11 +71,12 @@ proc jserver*(address: string, port: int) {.async.} =
   # I found a simple tut for async logging? (link here: https://hookrace.net/blog/writing-an-async-logger-in-nim/)
   #, also live share is sharing the listener for nimberite, so I could join it locally , yeah, just saying that I could theoretically
   server.listen() # Make it so we can listen to connections
-  log("Java server ready!", Level.lvlInfo)
+  #log("Java server ready!", Level.lvlInfo)
+  logger.info("Java server ready!")
 
   while true:
     let client = await server.accept()
 
     clients.add client # Global list of clients
 
-    asyncCheck client.handle # Run client handler in background
+    asyncCheck client.reciever # Run client reciever in background

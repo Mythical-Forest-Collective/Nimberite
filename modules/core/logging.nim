@@ -12,10 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import std/[logging, macros, terminal, os]
+import std/[logging, macros, terminal, os, tables, strutils]
+
+type Logger* = object # Not inheritable
+  source*: string 
+
+var loggers = newSeq[Logger]()
+
+proc getLogger*(source: string): Logger =
+  for logger in loggers:
+    if logger.source == source:
+      return logger
+
+  var result = Logger(source:source)
+  loggers.add result
 
 # This code reminds me of once I spent 5 hours writing a python logging system - Pyris
-proc log*(input: string, level: Level=Level.lvlInfo) = # Default logging level
+proc log(logger: Logger, level: Level=Level.lvlInfo, input: string) = # keep this, will be useful lmao, can be moved into a temp file if needbe (will need to be changed tho)
   var levelColour: ForegroundColor
   var levelString: string
   if level == Level.lvlInfo:
@@ -31,14 +44,12 @@ proc log*(input: string, level: Level=Level.lvlInfo) = # Default logging level
     levelColour = fgRed
     if level == Level.lvlError: levelString = "error"
     else: levelString = "fatal"
-  stdout.styledWriteLine(fgCyan, "nimberite ", levelColour, levelString, fgDefault, " " & input)
+  stdout.styledWriteLine(fgCyan, logger.source & " ", levelColour, levelString, fgDefault, " " & input)
+# yeye oki
 
-
-template info*(input: string) = log(input, Level.lvlInfo)
-template debug*(input: string) = log(input, Level.lvlDebug)
-template warn*(input: string) = log(input, Level.lvlWarn)
-template error*(input: string) = log(input, Level.lvlError)
-template fatal*(input: string) = log(input, Level.lvlFatal)
-
-
-export Level
+# template info*(input: string) = log(input, Level.lvlInfo)=
+proc info*(logger: Logger, input: varargs[string]) = log(logger, Level.lvlInfo, input.join(""))
+proc debug*(logger: Logger, input: varargs[string]) = log(logger, Level.lvlDebug, input.join(""))
+proc warn*(logger: Logger, input: varargs[string]) = log(logger, Level.lvlWarn, input.join(""))
+proc error*(logger: Logger, input: varargs[string]) = log(logger, Level.lvlError, input.join(""))
+proc fatal*(logger: Logger, input: varargs[string]) = log(logger, Level.lvlFatal, input.join(""))

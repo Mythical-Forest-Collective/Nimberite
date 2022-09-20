@@ -1,4 +1,4 @@
-# Copyright 2022 ecorous
+# Copyright 2022 "Ecorous System", "Mythical Forest Collective"
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,3 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#[
+import std/[asyncdispatch, asyncnet, tables]
+import ./types as jtypes
+
+var packetQueues: Table[AsyncSocket,seq[JavaBasePacket]]
+
+# Allows for us to pretend we have a custom field on the type, only here for queueing packets
+proc packetQueue*(client: AsyncSocket): ref seq[JavaBasePacket] =
+  if packetQueues.hasKey(client):
+    return ref packetQueues[client]
+
+  packetQueues[client] = newSeq[JavaBasePacket]()
+  return packetQueues[client]
+]#
